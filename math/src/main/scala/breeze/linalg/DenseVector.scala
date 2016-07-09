@@ -48,7 +48,7 @@ import scalaxy.debug._
  * @param length number of elements
  */
 @SerialVersionUID(1L) // TODO: scala doesn't propagate this to specialized subclasses. Sigh.
-class DenseVector[@spec(Double, Int, Float, Long) V](val data: Array[V],
+class DenseVector[@spec(Byte, Short, Double, Int, Float, Long) V](val data: Array[V],
                                                val offset: Int,
                                                val stride: Int,
                                                val length: Int) extends StorageVector[V]
@@ -250,20 +250,22 @@ object DenseVector extends VectorConstructors[DenseVector]
                       with DenseVector_SpecialOps {
 
 
-  def zeros[@spec(Double, Int, Float, Long) V: ClassTag : Zero](size: Int): DenseVector[V] = {
+  def zeros[@spec(Byte, Short, Double, Int, Float, Long) V: ClassTag : Zero](size: Int): DenseVector[V] = {
     val data = new Array[V](size)
     if(size != 0 && data(0) != implicitly[Zero[V]].zero)
       ArrayUtil.fill(data, 0, data.length, implicitly[Zero[V]].zero)
     apply(data)
   }
 
-  def apply[@spec(Double, Int, Float, Long) V](values: Array[V]): DenseVector[V] = {
+  def apply[@spec(Byte, Short, Double, Int, Float, Long) V](values: Array[V]): DenseVector[V] = {
     // ensure we get specialized implementations even from non-specialized calls
     (values:AnyRef) match {
       case v: Array[Double] => new DenseVector(v).asInstanceOf[DenseVector[V]]
       case v: Array[Float] => new DenseVector(v).asInstanceOf[DenseVector[V]]
       case v: Array[Int] => new DenseVector(v).asInstanceOf[DenseVector[V]]
       case v: Array[Long] => new DenseVector(v).asInstanceOf[DenseVector[V]]
+      case v: Array[Byte] => new DenseVector(v).asInstanceOf[DenseVector[V]]
+      case v: Array[Short] => new DenseVector(v).asInstanceOf[DenseVector[V]]
       case _ => new DenseVector(values)
     }
   }
@@ -289,9 +291,9 @@ object DenseVector extends VectorConstructors[DenseVector]
     }
   }
 
-  def ones[@spec(Double, Int, Float, Long) V: ClassTag:Semiring](size: Int): DenseVector[V] = fill[V](size, implicitly[Semiring[V]].one)
+  def ones[@spec(Byte, Short, Double, Int, Float, Long) V: ClassTag:Semiring](size: Int): DenseVector[V] = fill[V](size, implicitly[Semiring[V]].one)
 
-  def fill[@spec(Double, Int, Float, Long) V: ClassTag:Semiring](size: Int, v: V): DenseVector[V] = {
+  def fill[@spec(Byte, Short, Double, Int, Float, Long) V: ClassTag:Semiring](size: Int, v: V): DenseVector[V] = {
     val r = apply(new Array[V](size))
     assert(r.stride == 1)
     ArrayUtil.fill(r.data, r.offset, r.length, v)
@@ -355,7 +357,7 @@ object DenseVector extends VectorConstructors[DenseVector]
   }
 
 
-  implicit def canMapValues[@specialized(Int, Float, Double) V, @specialized(Int, Float, Double) V2](implicit man: ClassTag[V2]): CanMapValues[DenseVector[V], V, V2, DenseVector[V2]] = {
+  implicit def canMapValues[@specialized(Byte, Short, Int, Float, Double) V, @specialized(Byte, Short, Int, Float, Double) V2](implicit man: ClassTag[V2]): CanMapValues[DenseVector[V], V, V2, DenseVector[V2]] = {
     new CanMapValues[DenseVector[V], V, V2, DenseVector[V2]] {
       /**Maps all key-value pairs from the given collection. */
       def apply(from: DenseVector[V], fn: (V) => V2): DenseVector[V2] = {
@@ -442,7 +444,7 @@ object DenseVector extends VectorConstructors[DenseVector]
     }
 
 
-  implicit def canTransformValues[@specialized(Int, Float, Double) V]: CanTransformValues[DenseVector[V], V] =
+  implicit def canTransformValues[@specialized(Byte, Short, Int, Float, Double) V]: CanTransformValues[DenseVector[V], V] =
 
     new CanTransformValues[DenseVector[V], V] {
       def transform(from: DenseVector[V], fn: (V) => V) {
@@ -529,7 +531,7 @@ object DenseVector extends VectorConstructors[DenseVector]
     }
   }
 
-  class CanZipMapValuesDenseVector[@spec(Double, Int, Float, Long) V, @spec(Int, Double) RV:ClassTag] extends CanZipMapValues[DenseVector[V],V,RV,DenseVector[RV]] {
+  class CanZipMapValuesDenseVector[@spec(Byte, Short, Double, Int, Float, Long) V, @spec(Byte, Short, Int, Double) RV:ClassTag] extends CanZipMapValues[DenseVector[V],V,RV,DenseVector[RV]] {
     def create(length : Int) = DenseVector(new Array[RV](length))
 
     /**Maps all corresponding values from the two collection. */
@@ -551,7 +553,7 @@ object DenseVector extends VectorConstructors[DenseVector]
   implicit val zipMap_f: CanZipMapValuesDenseVector[Float, Float] = new CanZipMapValuesDenseVector[Float, Float]
   implicit val zipMap_i: CanZipMapValuesDenseVector[Int, Int] = new CanZipMapValuesDenseVector[Int, Int]
 
-  class CanZipMapKeyValuesDenseVector[@spec(Double, Int, Float, Long) V, @spec(Int, Double) RV:ClassTag] extends CanZipMapKeyValues[DenseVector[V],Int, V,RV,DenseVector[RV]] {
+  class CanZipMapKeyValuesDenseVector[@spec(Byte, Short, Double, Int, Float, Long) V, @spec(Byte, Short, Int, Double) RV:ClassTag] extends CanZipMapKeyValues[DenseVector[V],Int, V,RV,DenseVector[RV]] {
     def create(length : Int) = DenseVector(new Array[RV](length))
 
     /**Maps all corresponding values from the two collection. */

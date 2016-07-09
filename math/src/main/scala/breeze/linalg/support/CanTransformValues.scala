@@ -25,7 +25,7 @@ import breeze.math.Complex
  * @author dramage
  * @author dlwh
  */
-trait CanTransformValues[From, @specialized(Double, Int, Float) A] {
+trait CanTransformValues[From, @specialized(Byte, Short, Double, Int, Float) A] {
   /**Transforms all key-value pairs from the given collection. */
   def transform(from: From, fn: (A => A))
 
@@ -42,7 +42,7 @@ object CanTransformValues {
   // Arrays
   //
 
-  class OpArray[@specialized(Double, Int, Float, Long) A]
+  class OpArray[@specialized(Byte, Short, Double, Int, Float, Long) A]
     extends Op[Array[A], A] {
 
     /**Transforms all values from the given collection. */

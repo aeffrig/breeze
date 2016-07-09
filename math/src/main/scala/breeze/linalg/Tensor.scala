@@ -30,7 +30,7 @@ import scala.reflect.ClassTag
  * @tparam K
  * @tparam V
  */
-trait QuasiTensor[@spec(Int) K, @spec(Double, Int, Float, Long) V] {
+trait QuasiTensor[@spec(Int) K, @spec(Byte, Short, Double, Int, Float, Long) V] {
   def apply(i: K): V
   def update(i: K, v: V): Unit
   def keySet: scala.collection.Set[K]
@@ -100,7 +100,7 @@ trait QuasiTensor[@spec(Int) K, @spec(Double, Int, Float, Long) V] {
 
 
 
-trait TensorLike[@spec(Int) K, @spec(Double, Int, Float, Long) V, +This<:Tensor[K, V]]
+trait TensorLike[@spec(Int) K, @spec(Byte, Short, Double, Int, Float, Long) V, +This<:Tensor[K, V]]
           extends QuasiTensor[K,V]
           with NumericOps[This] {
 
@@ -213,7 +213,7 @@ trait TensorLike[@spec(Int) K, @spec(Double, Int, Float, Long) V, +This<:Tensor[
  *
  * @author dlwh
  */
-trait Tensor[@spec(Int) K, @spec(Double, Int, Float, Long) V] extends TensorLike[K, V, Tensor[K, V]]
+trait Tensor[@spec(Int) K, @spec(Byte, Short, Double, Int, Float, Long) V] extends TensorLike[K, V, Tensor[K, V]]
 
 object Tensor {
 

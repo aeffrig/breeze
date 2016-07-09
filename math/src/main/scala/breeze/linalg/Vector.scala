@@ -46,7 +46,7 @@ trait VectorLike[@spec V, +Self <: Vector[V]] extends Tensor[Int, V] with Tensor
  * A Vector represents the mathematical concept of a vector in math.
  * @tparam V
  */
-trait Vector[@spec(Int, Double, Float) V] extends VectorLike[V, Vector[V]]{
+trait Vector[@spec(Byte, Short, Int, Double, Float) V] extends VectorLike[V, Vector[V]]{
 
   /**
    * @return the set of keys in this vector (0 until length)
@@ -865,7 +865,7 @@ trait VectorConstructors[Vec[T]<:Vector[T]] {
    * @tparam V
    * @return
    */
-  def fill[@spec(Double, Int, Float, Long) V:ClassTag](size: Int)(v: =>V): Vec[V] = {
+  def fill[@spec(Byte, Short, Double, Int, Float, Long) V:ClassTag](size: Int)(v: =>V): Vec[V] = {
     apply(Array.fill(size)(v))
   }
 
@@ -877,7 +877,7 @@ trait VectorConstructors[Vec[T]<:Vector[T]] {
    * @tparam V
    * @return
    */
-  def tabulate[@spec(Double, Int, Float, Long) V:ClassTag](size: Int)(f: Int=>V): Vec[V] = {
+  def tabulate[@spec(Byte, Short, Double, Int, Float, Long) V:ClassTag](size: Int)(f: Int=>V): Vec[V] = {
     apply(Array.tabulate(size)(f))
   }
 
@@ -887,7 +887,7 @@ trait VectorConstructors[Vec[T]<:Vector[T]] {
    * @tparam V
    * @return
    */
-  def tabulate[@spec(Double, Int, Float, Long) V:ClassTag](range: Range)(f: Int=>V):Vec[V]= {
+  def tabulate[@spec(Byte, Short, Double, Int, Float, Long) V:ClassTag](range: Range)(f: Int=>V):Vec[V]= {
     val b = ArrayBuilder.make[V]()
     b.sizeHint(range.length)
     var i = 0

@@ -47,7 +47,7 @@ object mapValues extends UFunc with mapValuesLowPrio {
   // Arrays
   //
 
-  class OpArray[@spec(Double, Int, Float, Long)  A, @spec(Double, Int, Float, Long) B: ClassTag]
+  class OpArray[@spec(Byte, Short, Double, Int, Float, Long)  A, @spec(Byte, Short, Double, Int, Float, Long) B: ClassTag]
     extends Impl2[Array[A], A => B, Array[B]] {
 
     /**Maps all values from the given collection. */

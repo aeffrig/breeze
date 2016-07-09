@@ -11,7 +11,7 @@ import scala.reflect.ClassTag
 
 class SliceMatrix[@specialized(Int) K1,
                   @specialized(Int) K2,
-                  @specialized(Double, Int, Float, Long) V:Semiring:ClassTag](val tensor: Tensor[(K1, K2),V],
+                  @specialized(Byte, Short, Double, Int, Float, Long) V:Semiring:ClassTag](val tensor: Tensor[(K1, K2),V],
                                                                               val slice1: IndexedSeq[K1],
                                                                               val slice2: IndexedSeq[K2])
   extends Matrix[V] with MatrixLike[V, SliceMatrix[K1, K2, V]] {
@@ -73,7 +73,7 @@ object SliceMatrix extends LowPrioritySliceMatrix with SliceMatrixOps {
     }
   }
 
-  implicit def canMapValues[K1, K2, @specialized(Int, Float, Double) V, @specialized(Int, Float, Double) V2: ClassTag: Zero]: CanMapValues[SliceMatrix[K1, K2, V], V, V2, DenseMatrix[V2]] = {
+  implicit def canMapValues[K1, K2, @specialized(Byte, Short, Int, Float, Double) V, @specialized(Byte, Short, Int, Float, Double) V2: ClassTag: Zero]: CanMapValues[SliceMatrix[K1, K2, V], V, V2, DenseMatrix[V2]] = {
     new CanMapValues[SliceMatrix[K1, K2, V], V, V2, DenseMatrix[V2]] {
       override def apply(from: SliceMatrix[K1, K2, V], fn: (V) => V2): DenseMatrix[V2] = {
         DenseMatrix.tabulate(from.rows, from.cols)((i, j) => fn(from(i, j)))
@@ -190,7 +190,7 @@ trait SliceMatrixOps {
 
   class SMOpSetInPlace[@specialized(Int) K1,
                 @specialized(Int) K2,
-                @specialized(Double, Int, Float, Long) V] extends OpSet.InPlaceImpl2[SliceMatrix[K1, K2, V], V] {
+                @specialized(Byte, Short, Double, Int, Float, Long) V] extends OpSet.InPlaceImpl2[SliceMatrix[K1, K2, V], V] {
     def apply(a: SliceMatrix[K1, K2, V], b: V): Unit = a.keysIterator.foreach(k => a.update(k, b))
   }
 }

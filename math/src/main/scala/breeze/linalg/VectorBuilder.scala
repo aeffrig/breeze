@@ -43,7 +43,7 @@ import breeze.generic.UFunc.{UImpl2, InPlaceImpl2}
  * @author dlwh
  */
 @SerialVersionUID(1)
-class VectorBuilder[@spec(Double, Int, Float, Long) E](private var _index: Array[Int],
+class VectorBuilder[@spec(Byte, Short, Double, Int, Float, Long) E](private var _index: Array[Int],
                                                 private var _data: Array[E],
                                                 private var used: Int,
                                                 var length: Int)
@@ -311,12 +311,12 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](private var _index: Array
 
 object VectorBuilder extends VectorBuilderOps {
 
-  def zeros[@spec(Double, Int, Float, Long) V: ClassTag:Semiring:Zero](size: Int, initialNonzero: Int = 16) = new VectorBuilder(size, initialNonzero)
-  def apply[@spec(Double, Int, Float, Long) V:Semiring:Zero](values: Array[V]) = new VectorBuilder(Array.range(0,values.length), values, values.length, values.length)
+  def zeros[@spec(Byte, Short, Double, Int, Float, Long) V: ClassTag:Semiring:Zero](size: Int, initialNonzero: Int = 16) = new VectorBuilder(size, initialNonzero)
+  def apply[@spec(Byte, Short, Double, Int, Float, Long) V:Semiring:Zero](values: Array[V]) = new VectorBuilder(Array.range(0,values.length), values, values.length, values.length)
 
   def apply[V:ClassTag:Semiring:Zero](values: V*):VectorBuilder[V] = apply(values.toArray)
-  def fill[@spec(Double, Int, Float, Long) V:ClassTag:Semiring:Zero](size: Int)(v: =>V):VectorBuilder[V] = apply(Array.fill(size)(v))
-  def tabulate[@spec(Double, Int, Float, Long) V:ClassTag:Semiring:Zero](size: Int)(f: Int=>V):VectorBuilder[V]= apply(Array.tabulate(size)(f))
+  def fill[@spec(Byte, Short, Double, Int, Float, Long) V:ClassTag:Semiring:Zero](size: Int)(v: =>V):VectorBuilder[V] = apply(Array.fill(size)(v))
+  def tabulate[@spec(Byte, Short, Double, Int, Float, Long) V:ClassTag:Semiring:Zero](size: Int)(f: Int=>V):VectorBuilder[V]= apply(Array.tabulate(size)(f))
 
   def apply[V:ClassTag:Semiring:Zero](length: Int)(values: (Int, V)*) = {
     val r = zeros[V](length)
@@ -328,32 +328,32 @@ object VectorBuilder extends VectorBuilderOps {
 
 
   // implicits
-  class CanCopyBuilder[@spec(Double, Int, Float, Long) V:ClassTag:Semiring:Zero] extends CanCopy[VectorBuilder[V]] {
+  class CanCopyBuilder[@spec(Byte, Short, Double, Int, Float, Long) V:ClassTag:Semiring:Zero] extends CanCopy[VectorBuilder[V]] {
     def apply(v1: VectorBuilder[V]) = {
       v1.copy
     }
   }
 
-  class CanZerosBuilder[@spec(Double, Int, Float, Long) V:ClassTag:Semiring:Zero] extends CanCreateZerosLike[VectorBuilder[V], VectorBuilder[V]] {
+  class CanZerosBuilder[@spec(Byte, Short, Double, Int, Float, Long) V:ClassTag:Semiring:Zero] extends CanCreateZerosLike[VectorBuilder[V], VectorBuilder[V]] {
     def apply(v1: VectorBuilder[V]) = {
       v1.zerosLike
     }
   }
 
-  implicit def canCopyBuilder[@spec(Double, Int, Float, Long) V: ClassTag: Semiring:Zero]: CanCopyBuilder[V] = {
+  implicit def canCopyBuilder[@spec(Byte, Short, Double, Int, Float, Long) V: ClassTag: Semiring:Zero]: CanCopyBuilder[V] = {
     new CanCopyBuilder[V]
   }
-  implicit def canZerosBuilder[@spec(Double, Int, Float, Long) V: ClassTag: Semiring:Zero]: CanZerosBuilder[V] = {
+  implicit def canZerosBuilder[@spec(Byte, Short, Double, Int, Float, Long) V: ClassTag: Semiring:Zero]: CanZerosBuilder[V] = {
     new CanZerosBuilder[V]
   }
 
-  implicit def canZeroBuilder[@spec(Double, Int, Float, Long) V:Semiring:Zero:ClassTag]: CanCreateZeros[VectorBuilder[V], Int] = {
+  implicit def canZeroBuilder[@spec(Byte, Short, Double, Int, Float, Long) V:Semiring:Zero:ClassTag]: CanCreateZeros[VectorBuilder[V], Int] = {
     new CanCreateZeros[VectorBuilder[V],Int] {
       def apply(d: Int): VectorBuilder[V] = zeros(d)
     }
   }
 
-  implicit def negFromScale[@spec(Double, Int, Float, Long)  V]
+  implicit def negFromScale[@spec(Byte, Short, Double, Int, Float, Long)  V]
             (implicit scale: OpMulScalar.Impl2[VectorBuilder[V], V, VectorBuilder[V]],
              field: Ring[V]):OpNeg.Impl[VectorBuilder[V], VectorBuilder[V]] = {
     new OpNeg.Impl[VectorBuilder[V], VectorBuilder[V]] {

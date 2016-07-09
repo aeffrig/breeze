@@ -85,10 +85,10 @@ object HashVector extends HashVectorOps
                           with HashVector_SparseVector_Ops
                           with SparseVector_HashVector_Ops
                            {
-  def zeros[@spec(Double, Int, Float, Long) V: ClassTag:Zero](size: Int) = {
+  def zeros[@spec(Byte, Short, Double, Int, Float, Long) V: ClassTag:Zero](size: Int) = {
     new HashVector(new OpenAddressHashArray[V](size))
   }
-  def apply[@spec(Double, Int, Float, Long) V:Zero](values: Array[V]) = {
+  def apply[@spec(Byte, Short, Double, Int, Float, Long) V:Zero](values: Array[V]) = {
     implicit val man = ClassTag[V](values.getClass.getComponentType.asInstanceOf[Class[V]])
     val oah = new OpenAddressHashArray[V](values.length)
     for( (v,i) <- values.zipWithIndex) oah(i) = v
@@ -98,8 +98,8 @@ object HashVector extends HashVectorOps
   def apply[V:ClassTag:Zero](values: V*):HashVector[V] = {
     apply(values.toArray)
   }
-  def fill[@spec(Double, Int, Float, Long) V:ClassTag:Zero](size: Int)(v: =>V):HashVector[V] = apply(Array.fill(size)(v))
-  def tabulate[@spec(Double, Int, Float, Long) V:ClassTag:Zero](size: Int)(f: Int=>V):HashVector[V]= apply(Array.tabulate(size)(f))
+  def fill[@spec(Byte, Short, Double, Int, Float, Long) V:ClassTag:Zero](size: Int)(v: =>V):HashVector[V] = apply(Array.fill(size)(v))
+  def tabulate[@spec(Byte, Short, Double, Int, Float, Long) V:ClassTag:Zero](size: Int)(f: Int=>V):HashVector[V]= apply(Array.tabulate(size)(f))
 
   def apply[V:ClassTag:Zero](length: Int)(values: (Int, V)*) = {
     val r = zeros[V](length)
@@ -121,13 +121,13 @@ object HashVector extends HashVectorOps
 
 
   // implicits
-  class CanCopyHashVector[@specialized(Int, Float, Double) V:ClassTag:Zero] extends CanCopy[HashVector[V]] {
+  class CanCopyHashVector[@specialized(Byte, Short, Int, Float, Double) V:ClassTag:Zero] extends CanCopy[HashVector[V]] {
     def apply(v1: HashVector[V]) = {
       v1.copy
     }
   }
 
-  implicit def canCopyHash[@specialized(Int, Float, Double) V: ClassTag: Zero]: CanCopyHashVector[V] = new CanCopyHashVector[V]
+  implicit def canCopyHash[@specialized(Byte, Short, Int, Float, Double) V: ClassTag: Zero]: CanCopyHashVector[V] = new CanCopyHashVector[V]
 
   implicit def canMapValues[V, V2: ClassTag: Zero]:CanMapValues[HashVector[V], V, V2, HashVector[V2]] = {
     new CanMapValues[HashVector[V], V, V2, HashVector[V2]] {

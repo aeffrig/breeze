@@ -21,7 +21,7 @@ import scala.{specialized => spec}
   *
   * @author dlwh
  */
-class SliceVector[@spec(Int) K, @spec(Double, Int, Float, Long) V:ClassTag](val tensor: Tensor[K,V],
+class SliceVector[@spec(Int) K, @spec(Byte, Short, Double, Int, Float, Long) V:ClassTag](val tensor: Tensor[K,V],
                                                                             val slices: IndexedSeq[K])
   extends Vector[V] with VectorLike[V, SliceVector[K, V]] {
 
@@ -135,11 +135,11 @@ trait SliceVectorOps {
 
   implicit def opMulScalarInPlace[K, V : ClassTag : Semiring]: OpMulScalar.InPlaceImpl2[SliceVector[K, V], V] = new SVOpMulScalarInPlace[K, V]
 
-  class SVOpSetInPlace[@specialized(Int) K, @specialized(Double, Int, Float, Long) V] extends OpSet.InPlaceImpl2[SliceVector[K, V], V] {
+  class SVOpSetInPlace[@specialized(Int) K, @specialized(Byte, Short, Double, Int, Float, Long) V] extends OpSet.InPlaceImpl2[SliceVector[K, V], V] {
     def apply(a: SliceVector[K, V], b: V): Unit = a.keysIterator.foreach(k => a.update(k, b))
   }
 
-  class SVOpMulScalar[@specialized(Int) K, @specialized(Double, Int, Float, Long) V: ClassTag : Semiring] extends OpMulScalar.Impl2[SliceVector[K, V], V, DenseVector[V]] {
+  class SVOpMulScalar[@specialized(Int) K, @specialized(Byte, Short, Double, Int, Float, Long) V: ClassTag : Semiring] extends OpMulScalar.Impl2[SliceVector[K, V], V, DenseVector[V]] {
     val semiring = implicitly[Semiring[V]]
 
     def apply(a: SliceVector[K, V], b: V): DenseVector[V] = a.iterator.foldLeft(new VectorBuilder[V](a.length))({
@@ -149,7 +149,7 @@ trait SliceVectorOps {
     }).toDenseVector
   }
 
-  class SVOpMulScalarInPlace[@specialized(Int) K, @specialized(Double, Int, Float, Long) V: ClassTag : Semiring] extends OpMulScalar.InPlaceImpl2[SliceVector[K, V], V] {
+  class SVOpMulScalarInPlace[@specialized(Int) K, @specialized(Byte, Short, Double, Int, Float, Long) V: ClassTag : Semiring] extends OpMulScalar.InPlaceImpl2[SliceVector[K, V], V] {
     val semiring = implicitly[Semiring[V]]
 
     def apply(a: SliceVector[K, V], b: V): Unit = a.iterator.foreach({

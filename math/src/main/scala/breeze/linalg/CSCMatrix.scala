@@ -38,7 +38,7 @@ import scalaxy.debug._
  * @author dlwh
  */
 // TODO: maybe put columns in own array of sparse vectors, making slicing easier?
-class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](private var _data: Array[V],
+class CSCMatrix[@spec(Byte, Short, Double, Int, Float, Long) V: Zero](private var _data: Array[V],
                                                          val rows: Int,
                                                          val cols: Int,
                                                          val colPtrs: Array[Int], // len cols + 1
@@ -278,13 +278,13 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](private var _data: Arra
 
 object CSCMatrix extends MatrixConstructors[CSCMatrix]
                  with CSCMatrixOps with SerializableLogging {
-  def zeros[@specialized(Int, Float, Double) V:ClassTag:Zero](rows: Int, cols: Int, initialNonzero: Int) = {
+  def zeros[@specialized(Byte, Short, Int, Float, Double) V:ClassTag:Zero](rows: Int, cols: Int, initialNonzero: Int) = {
     new CSCMatrix[V](new Array(initialNonzero), rows, cols, new Array(cols + 1), 0, new Array(initialNonzero))
   }
 
-  def zeros[@spec(Double, Int, Float, Long) V: ClassTag : Zero](rows: Int, cols: Int): CSCMatrix[V] = zeros(rows, cols, 0)
+  def zeros[@spec(Byte, Short, Double, Int, Float, Long) V: ClassTag : Zero](rows: Int, cols: Int): CSCMatrix[V] = zeros(rows, cols, 0)
 
-  def create[@spec(Double, Int, Float, Long) V: Zero](rows: Int, cols: Int, data: Array[V]): CSCMatrix[V] = {
+  def create[@spec(Byte, Short, Double, Int, Float, Long) V: Zero](rows: Int, cols: Int, data: Array[V]): CSCMatrix[V] = {
     val z = implicitly[Zero[V]].zero
     implicit val man = ClassTag[V](data.getClass.getComponentType.asInstanceOf[Class[V]])
     val res = zeros(rows, cols, data.length)
@@ -300,13 +300,13 @@ object CSCMatrix extends MatrixConstructors[CSCMatrix]
     res
   }
 
-  class CanCopyCSCMatrix[@spec(Double, Int, Float, Long) V:ClassTag:Zero] extends CanCopy[CSCMatrix[V]] {
+  class CanCopyCSCMatrix[@spec(Byte, Short, Double, Int, Float, Long) V:ClassTag:Zero] extends CanCopy[CSCMatrix[V]] {
     def apply(v1: CSCMatrix[V]) = {
       v1.copy
     }
   }
 
-  implicit def canCopySparse[@spec(Double, Int, Float, Long) V: ClassTag: Zero] = new CanCopyCSCMatrix[V]
+  implicit def canCopySparse[@spec(Byte, Short, Double, Int, Float, Long) V: ClassTag: Zero] = new CanCopyCSCMatrix[V]
 
   implicit def canCreateZerosLike[V:ClassTag:Zero]: CanCreateZerosLike[CSCMatrix[V], CSCMatrix[V]] =
     new CanCreateZerosLike[CSCMatrix[V], CSCMatrix[V]] {
@@ -448,7 +448,7 @@ object CSCMatrix extends MatrixConstructors[CSCMatrix]
    * @param cols if negative, result will automatically infer size
    * @param initNnz initial number of nonzero entries
    */
-  class Builder[@spec(Double, Int, Float, Long) T:ClassTag:Semiring:Zero](val rows: Int, val cols: Int, initNnz: Int = 16) {
+  class Builder[@spec(Byte, Short, Double, Int, Float, Long) T:ClassTag:Semiring:Zero](val rows: Int, val cols: Int, initNnz: Int = 16) {
     private def ring = implicitly[Semiring[T]]
 
     def add(r: Int, c: Int, v: T) {
@@ -563,7 +563,7 @@ object CSCMatrix extends MatrixConstructors[CSCMatrix]
   }
 
   object Builder {
-    def fromMatrix[@spec(Double, Int, Float, Long) T:ClassTag:Semiring:Zero](matrix: CSCMatrix[T]):Builder[T] = {
+    def fromMatrix[@spec(Byte, Short, Double, Int, Float, Long) T:ClassTag:Semiring:Zero](matrix: CSCMatrix[T]):Builder[T] = {
       val bldr = new Builder[T](matrix.rows, matrix.cols, matrix.activeSize)
       var c = 0
       while(c < matrix.cols) {
